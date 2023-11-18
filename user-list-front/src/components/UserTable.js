@@ -1,17 +1,18 @@
 import React from "react";
 import { useTheme } from "@mui/material/styles";
 import {
+  Box,
+  IconButton,
+  Paper,
   Table,
   TableBody,
   TableCell,
-  TableHead,
-  TableRow,
-  TablePagination,
+  TableContainer,
   TableFooter,
-  Paper,
+  TableHead,
+  TablePagination,
+  TableRow,
   TableSortLabel,
-  IconButton,
-  Box,
 } from "@mui/material";
 import FirstPageIcon from "@mui/icons-material/FirstPage";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
@@ -92,7 +93,7 @@ const UserTable = ({
   handleRowClick,
 }) => {
   return (
-    <Paper>
+    <TableContainer component={Paper} sx={{ mt: 2, mb: 2, overflow: "hidden" }}>
       <Table>
         <TableHead>
           <TableRow>
@@ -124,6 +125,7 @@ const UserTable = ({
               <TableRow
                 key={user.id}
                 hover
+                sx={{ "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.07)" } }}
                 onClick={() => handleRowClick(user)}
               >
                 <TableCell>{user.name}</TableCell>
@@ -135,7 +137,7 @@ const UserTable = ({
         <TableFooter>
           <TableRow>
             <TablePagination
-              rowsPerPageOptions={[50, { label: "All", value: -1 }]}
+              rowsPerPageOptions={[5, 10, 25, 50, { label: "All", value: -1 }]}
               colSpan={3}
               count={users.length}
               rowsPerPage={rowsPerPage}
@@ -147,7 +149,7 @@ const UserTable = ({
           </TableRow>
         </TableFooter>
       </Table>
-    </Paper>
+    </TableContainer>
   );
 };
 

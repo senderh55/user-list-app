@@ -10,7 +10,16 @@ import {
 
 const UserSearchBar = ({ onSearchChange, onFieldChange, searchField }) => {
   return (
-    <Box display="flex" alignItems="center" gap={2}>
+    <Box
+      display="flex"
+      alignItems="center"
+      gap={2}
+      sx={{
+        mb: 2,
+        p: 2, // Adding padding around the Box
+        width: "100%", // Ensuring the Box takes full width if not already
+      }}
+    >
       <FormControl variant="outlined" sx={{ minWidth: 120 }}>
         <InputLabel>Search By</InputLabel>
         <Select value={searchField} onChange={onFieldChange} label="Search By">
