@@ -146,7 +146,7 @@ const UserTable = ({
       </TableContainer>
       <Box sx={{ display: "flex", justifyContent: "flex-end", p: 2 }}>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25, 50, { label: "All", value: -1 }]}
+          rowsPerPageOptions={[5, 10, 25, 50]}
           colSpan={3}
           count={users.length}
           rowsPerPage={rowsPerPage}

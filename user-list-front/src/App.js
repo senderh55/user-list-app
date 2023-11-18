@@ -8,8 +8,6 @@ import dummyData from "./services/dummyData.json";
 function App() {
   return (
     <CustomThemeProvider>
-      {" "}
-      {/* Wrap your Router with CustomThemeProvider */}
       <Router>
         <Routes>
           <Route path="/" element={<HomePage initialUsers={dummyData} />} />
