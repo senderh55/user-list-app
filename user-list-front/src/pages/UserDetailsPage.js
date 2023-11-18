@@ -1,15 +1,26 @@
 import React from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom"; // useNavigate for navigation
 import UserDetails from "../components/UserDetails";
-import { Box, Typography, Paper, Container } from "@mui/material";
+import { Box, Typography, Paper, Container, Button } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack"; // Importing Back Arrow Icon
 
 const UserDetailsPage = ({ users }) => {
   const { userId } = useParams();
+  const navigate = useNavigate(); // For navigation
   const user = users.find((u) => u.id === parseInt(userId, 10));
+
+  const handleBack = () => {
+    navigate(-1); // Navigate back
+  };
 
   return (
     <Container maxWidth="md" sx={{ mt: 4, mb: 4 }}>
+      <Box sx={{ mb: 2 }}>
+        <Button startIcon={<ArrowBackIcon />} onClick={handleBack}>
+          Back
+        </Button>
+      </Box>
       {user ? (
         <UserDetails user={user} />
       ) : (

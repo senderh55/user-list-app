@@ -1,5 +1,5 @@
 import React from "react";
-import { useTheme } from "@mui/material/styles";
+import { useTheme, useMediaQuery } from "@mui/material";
 import {
   Box,
   IconButton,
@@ -8,7 +8,6 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableFooter,
   TableHead,
   TablePagination,
   TableRow,
@@ -92,64 +91,72 @@ const UserTable = ({
   orderBy,
   handleRowClick,
 }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   return (
-    <TableContainer component={Paper} sx={{ mt: 2, mb: 2, overflow: "hidden" }}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <TableSortLabel
-                active={orderBy === "name"}
-                direction={orderBy === "name" ? order : "asc"}
-                onClick={() => handleSort("name")}
-              >
-                Name
-              </TableSortLabel>
-            </TableCell>
-            <TableCell>Email</TableCell>
-            <TableCell>
-              <TableSortLabel
-                active={orderBy === "age"}
-                direction={orderBy === "age" ? order : "asc"}
-                onClick={() => handleSort("age")}
-              >
-                Age
-              </TableSortLabel>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {users
-            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            .map((user) => (
-              <TableRow
-                key={user.id}
-                hover
-                sx={{ "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.07)" } }}
-                onClick={() => handleRowClick(user)}
-              >
-                <TableCell>{user.name}</TableCell>
-                <TableCell>{user.email}</TableCell>
-                <TableCell>{user.age}</TableCell>
-              </TableRow>
-            ))}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TablePagination
-              rowsPerPageOptions={[5, 10, 25, 50, { label: "All", value: -1 }]}
-              colSpan={3}
-              count={users.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-              ActionsComponent={TablePaginationActions}
-            />
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </TableContainer>
+    <Box>
+      <TableContainer
+        component={Paper}
+        sx={{ mt: 2, mb: 2, overflowX: "auto", maxHeight: "60vh" }}
+      >
+        <Table sx={{ minWidth: 600 }}>
+          <TableHead>
+            <TableRow>
+              <TableCell>
+                <TableSortLabel
+                  active={orderBy === "name"}
+                  direction={orderBy === "name" ? order : "asc"}
+                  onClick={() => handleSort("name")}
+                >
+                  Name
+                </TableSortLabel>
+              </TableCell>
+              <TableCell>Email</TableCell>
+              {!isMobile && (
+                <TableCell>
+                  <TableSortLabel
+                    active={orderBy === "age"}
+                    direction={orderBy === "age" ? order : "asc"}
+                    onClick={() => handleSort("age")}
+                  >
+                    Age
+                  </TableSortLabel>
+                </TableCell>
+              )}
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {users
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((user) => (
+                <TableRow
+                  key={user.id}
+                  hover
+                  sx={{ "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.07)" } }}
+                  onClick={() => handleRowClick(user)}
+                >
+                  <TableCell>{user.name}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  {!isMobile && <TableCell>{user.age}</TableCell>}
+                </TableRow>
+              ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", p: 2 }}>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25, 50, { label: "All", value: -1 }]}
+          colSpan={3}
+          count={users.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          ActionsComponent={TablePaginationActions}
+        />
+      </Box>
+    </Box>
   );
 };
 

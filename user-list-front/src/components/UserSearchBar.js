@@ -16,8 +16,9 @@ const UserSearchBar = ({ onSearchChange, onFieldChange, searchField }) => {
       gap={2}
       sx={{
         mb: 2,
-        p: 2, // Adding padding around the Box
-        width: "100%", // Ensuring the Box takes full width if not already
+        p: 2,
+        width: "100%",
+        flexDirection: { xs: "column", sm: "row" }, // Stack elements vertically on small screens
       }}
     >
       <FormControl variant="outlined" sx={{ minWidth: 120 }}>

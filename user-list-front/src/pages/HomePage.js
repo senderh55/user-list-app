@@ -20,7 +20,7 @@ const HomePage = ({ initialUsers }) => {
 
   const handleSearchChange = (query) => {
     setSearchQuery(query);
-    setPage(0); // Reset to the first page on new search
+    setPage(0);
   };
 
   const handleSearchFieldChange = (event) => {
