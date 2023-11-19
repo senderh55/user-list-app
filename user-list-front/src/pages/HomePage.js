@@ -1,16 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import {
+  CircularProgress,
+  Box,
+  Typography,
+  FormControlLabel,
+  Switch,
+} from "@mui/material";
+import { fetchUsers } from "../services/api";
 import UserTable from "../components/UserTable";
-import UserSearchBar from "../components/UserSearchBar"; // Import the updated search component
+import UserSearchBar from "../components/UserSearchBar";
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
 import { ThemeContext } from "../context/ThemeContext";
-import { FormControlLabel, Switch } from "@mui/material";
-import { Box } from "@mui/system";
-import { Typography } from "@mui/material";
+import { Alert } from "@mui/material";
 
-const HomePage = ({ initialUsers }) => {
+const HomePage = () => {
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchField, setSearchField] = useState("name"); // State to track the search field
+  const [searchField, setSearchField] = useState("name");
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(50);
   const [order, setOrder] = useState("asc");
@@ -18,8 +26,23 @@ const HomePage = ({ initialUsers }) => {
   const navigate = useNavigate();
   const themeContext = useContext(ThemeContext);
 
+  useEffect(() => {
+    const fetchUsersAsync = async () => {
+      setIsLoading(true);
+      const response = await fetchUsers();
+      console.log(response);
+      if (response.error) {
+        setError(response.error);
+      } else {
+        setUsers(response);
+      }
+      setIsLoading(false);
+    };
+    fetchUsersAsync();
+  }, []);
+
   const handleSearchChange = (query) => {
-    setSearchQuery(query);
+    setSearchQuery(query.toLowerCase());
     setPage(0);
   };
 
@@ -34,16 +57,12 @@ const HomePage = ({ initialUsers }) => {
   };
 
   const handleRowClick = (user) => {
-    navigate(`/user/${user.id}`);
+    console.log(user);
+    navigate(`/user/${user.id}`, { state: { user } });
   };
 
-  // Filter and sort the users based on search query and selected field
-  const filteredSortedUsers = initialUsers
-    .filter((user) =>
-      searchField === "name"
-        ? user.name.toLowerCase().includes(searchQuery)
-        : user.email.toLowerCase().includes(searchQuery)
-    )
+  const filteredSortedUsers = users
+    .filter((user) => user[searchField]?.toLowerCase().includes(searchQuery))
     .sort((a, b) => {
       if (orderBy === "age") {
         return order === "asc" ? a.age - b.age : b.age - a.age;
@@ -57,62 +76,67 @@ const HomePage = ({ initialUsers }) => {
 
   return (
     <Box sx={{ p: 3 }}>
-      {/* Center-aligned Title and Description */}
       <Box sx={{ textAlign: "center", mb: 4 }}>
         <Typography
           variant="h3"
           component="h1"
           gutterBottom
-          sx={{
-            fontFamily: "'Roboto Slab', serif", // Custom font
-            fontWeight: "bold",
-          }}
+          sx={{ fontWeight: "bold" }}
         >
           User Management Dashboard
         </Typography>
-        <Typography
-          variant="subtitle1"
-          color="textSecondary"
-          sx={{
-            fontFamily: "'Roboto', sans-serif", // Complementary font for the subtitle
-          }}
-        >
+        <Typography variant="subtitle1" color="textSecondary">
           Explore and manage user data effectively. Use the table below to sort,
           search, and navigate through user information.
         </Typography>
       </Box>
-      {/* Padding around the main content */}
-      <Box sx={{ mb: 2 }}>
-        {" "}
-        {/* Margin for the Dark Mode switch */}
-        <FormControlLabel
-          control={
-            <Switch
-              checked={themeContext.mode === "dark"}
-              onChange={themeContext.toggleTheme}
-            />
-          }
-          label="Dark Mode"
-        />
-        <UserSearchBar
-          onSearchChange={handleSearchChange}
-          onFieldChange={handleSearchFieldChange}
-          searchField={searchField}
-        />
-      </Box>
-      <UserTable
-        users={filteredSortedUsers}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        handleChangePage={(event, newPage) => setPage(newPage)}
-        handleChangeRowsPerPage={(event) =>
-          setRowsPerPage(parseInt(event.target.value, 10))
-        }
-        handleSort={handleSort}
-        order={order}
-        orderBy={orderBy}
-        handleRowClick={handleRowClick}
-      />
+
+      {isLoading ? (
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "50vh",
+          }}
+        >
+          <CircularProgress />
+        </Box>
+      ) : error ? (
+        <Box sx={{ my: 2 }}>
+          <Alert severity="error">{error}</Alert>
+        </Box>
+      ) : (
+        <>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={themeContext.mode === "dark"}
+                onChange={themeContext.toggleTheme}
+              />
+            }
+            label="Dark Mode"
+          />
+          <UserSearchBar
+            onSearchChange={handleSearchChange}
+            onFieldChange={handleSearchFieldChange}
+            searchField={searchField}
+          />
+          <UserTable
+            users={filteredSortedUsers}
+            page={page}
+            rowsPerPage={rowsPerPage}
+            handleChangePage={(event, newPage) => setPage(newPage)}
+            handleChangeRowsPerPage={(event) =>
+              setRowsPerPage(parseInt(event.target.value, 10))
+            }
+            handleSort={handleSort}
+            order={order}
+            orderBy={orderBy}
+            handleRowClick={handleRowClick}
+          />
+        </>
+      )}
     </Box>
   );
 };

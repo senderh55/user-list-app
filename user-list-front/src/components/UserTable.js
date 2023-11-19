@@ -133,7 +133,9 @@ const UserTable = ({
                 <TableRow
                   key={user.id}
                   hover
-                  sx={{ "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.07)" } }}
+                  sx={{
+                    "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.07)" },
+                  }}
                   onClick={() => handleRowClick(user)}
                 >
                   <TableCell>{user.name}</TableCell>

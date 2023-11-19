@@ -1,17 +1,18 @@
 import React from "react";
-import { useParams, useNavigate } from "react-router-dom"; // useNavigate for navigation
+import { useNavigate, useLocation } from "react-router-dom";
 import UserDetails from "../components/UserDetails";
 import { Box, Typography, Paper, Container, Button } from "@mui/material";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack"; // Importing Back Arrow Icon
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-const UserDetailsPage = ({ users }) => {
-  const { userId } = useParams();
-  const navigate = useNavigate(); // For navigation
-  const user = users.find((u) => u.id === parseInt(userId, 10));
+const UserDetailsPage = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const user = location.state?.user;
 
   const handleBack = () => {
-    navigate(-1); // Navigate back
+    navigate(-1); // Navigate back to the previous page
   };
 
   return (
