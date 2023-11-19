@@ -4,6 +4,10 @@
 
 This full-stack application is designed to demonstrate a comprehensive implementation combining a FastAPI backend for data scraping and API development with a React frontend for user data presentation. The backend efficiently scrapes user data and exposes it through a REST API, while the frontend elegantly displays this data in a web application format.
 
+## Preview
+
+![User List preview](https://github.com/senderh55/user-list-app/blob/main/user_list_app.gif)
+
 ## Features
 
 ### Backend (Python with FastAPI)
