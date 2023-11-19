@@ -3,6 +3,7 @@ from time import sleep, time
 import logging
 from app.database import store
 from app.schemas import User
+import uuid
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -19,11 +20,11 @@ def fetch_and_store_users(batch_size, nationality, total_users):
             response.raise_for_status()  # Raises an HTTPError for bad requests
 
             users_data = response.json()['results']
-
             # Store users in RavenDB
             with store.open_session() as session:
                 for user_data in users_data:
                     user = User(
+                        id=str(uuid.uuid4()),  # Generate a unique ID
                         name=f"{user_data['name']['first']} {user_data['name']['last']}",
                         email=user_data['email'],
                         age=user_data['dob']['age'],
@@ -33,6 +34,7 @@ def fetch_and_store_users(batch_size, nationality, total_users):
                         username=user_data['login']['username'],
                         gender=user_data['gender']
                     )
+                    print(user)
                     session.store(user)
                 session.save_changes()
 
@@ -46,7 +48,7 @@ def fetch_and_store_users(batch_size, nationality, total_users):
         except Exception as e:
             logging.error(f"An error occurred: {e}")
 
-        sleep(3)  # Sleep to avoid hitting the API rate limit
+        sleep(10)  # Sleep to avoid hitting the API rate limit
 
     total_time = time() - start_time
     logging.info(f"Completed fetching data. Total time: {total_time:.2f} seconds")

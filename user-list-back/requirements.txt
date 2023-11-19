@@ -1,8 +1,11 @@
-pydantic
-requests
+pydantic~=2.5.1
+requests~=2.31.0
 uvicorn
-fastapi
+fastapi~=0.104.1
 uvicorn
 requests
 pydantic
-ravendb
+ravendb~=5.2.4
+
+cryptography~=41.0.5
+pem~=23.1.0
